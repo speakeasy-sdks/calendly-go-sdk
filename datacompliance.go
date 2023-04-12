@@ -32,7 +32,7 @@ func newDataCompliance(defaultClient, securityClient HTTPClient, serverURL, lang
 	}
 }
 
-// PostDataComplianceDeletionEvents - Delete Scheduled Event Data
+// CreateDeletionEvent - Delete Scheduled Event Data
 // <!-- theme: info -->
 //
 //	> This endpoint requires an <strong>Enterprise</strong> subscription.
@@ -40,7 +40,7 @@ func newDataCompliance(defaultClient, securityClient HTTPClient, serverURL, lang
 // To submit a request to remove scheduled events data within a time range for your organization, use this endpoint. Requests for data deletion can take up to 7 days to complete.
 //
 // Time range can be no greater than 24 months and must occur in the past.
-func (s *dataCompliance) PostDataComplianceDeletionEvents(ctx context.Context, request operations.PostDataComplianceDeletionEventsRequestBody) (*operations.PostDataComplianceDeletionEventsResponse, error) {
+func (s *dataCompliance) CreateDeletionEvent(ctx context.Context, request operations.PostDataComplianceDeletionEventsRequestBody) (*operations.PostDataComplianceDeletionEventsResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/data_compliance/deletion/events"
 
@@ -119,13 +119,13 @@ func (s *dataCompliance) PostDataComplianceDeletionEvents(ctx context.Context, r
 	return res, nil
 }
 
-// PostDataComplianceDeletionInvitees - Delete Invitee Data
+// DeleteInviteeData - Delete Invitee Data
 // <!-- theme: info -->
 //
 //	> This endpoint requires an <strong>Enterprise</strong> subscription.
 //
 // To submit a request to remove invitee data from all previously booked events in your organization, use this endpoint. Requests for data deletion can take up to 7 days to complete.
-func (s *dataCompliance) PostDataComplianceDeletionInvitees(ctx context.Context, request operations.PostDataComplianceDeletionInviteesRequestBody) (*operations.PostDataComplianceDeletionInviteesResponse, error) {
+func (s *dataCompliance) DeleteInviteeData(ctx context.Context, request operations.PostDataComplianceDeletionInviteesRequestBody) (*operations.PostDataComplianceDeletionInviteesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/data_compliance/deletion/invitees"
 

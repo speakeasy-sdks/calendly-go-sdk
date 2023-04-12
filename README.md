@@ -28,43 +28,25 @@ func main() {
         }),
     )
 
-    req := operations.ActivityLogRequest{
-        Action: []string{
-            "provident",
-            "distinctio",
-            "quibusdam",
-        },
-        Actor: []string{
-            "https://api.calendly.com/users/EBHAAFHDCAEQTSEZ",
-            "https://api.calendly.com/users/EBHAAFHDCAEQTSEZ",
-            "https://api.calendly.com/users/EBHAAFHDCAEQTSEZ",
-        },
-        Count: 857946,
-        MaxOccurredAt: "2021-04-22T12:08:58.275Z",
-        MinOccurredAt: "2022-05-18T09:34:54.894Z",
-        Namespace: []string{
-            "suscipit",
-            "iure",
-            "magnam",
-        },
+    ctx := context.Background()    
+    req := operations.ListScheduledEventsRequest{
+        Count: 5488.14,
+        InviteeEmail: "alice@example.com",
+        MaxStartTime: "provident",
+        MinStartTime: "distinctio",
         Organization: "https://api.calendly.com/organizations/EBHAAFHDCAEQTSEZ",
-        PageToken: "debitis",
-        SearchTerm: "ipsa",
-        Sort: []ActivityLogSortEnum{
-            "actor.display_name:asc",
-            "actor.display_name:desc",
-            "actor.uri:asc",
-            "namespace:desc",
-        },
+        PageToken: "quibusdam",
+        Sort: "unde",
+        Status: "canceled",
+        User: "https://api.calendly.com/users/EBHAAFHDCAEQTSEZ",
     }
 
-    ctx := context.Background()
-    res, err := s.ActivityLog.ActivityLog(ctx, req)
+    res, err := s.ScheduledEvents.List(ctx, req)
     if err != nil {
         log.Fatal(err)
     }
 
-    if res.ActivityLog200ApplicationJSONObject != nil {
+    if res.ListScheduledEvents200ApplicationJSONObject != nil {
         // handle response
     }
 }
@@ -77,74 +59,74 @@ func main() {
 
 ### ActivityLog
 
-* `ActivityLog` - List activity log entries
+* `List` - List activity log entries
 
 ### Availability
 
-* `GetUserAvailabilitySchedules` - List User Availability Schedules
-* `GetUserAvailabilitySchedulesUUID` - Get User Availability Schedule
-* `GetUserBusyTimes` - List User Busy Times
+* `Get` - Get User Availability Schedule
+* `GetAvailability` - List User Availability Schedules
+* `GetBusyTimes` - List User Busy Times
 
 ### DataCompliance
 
-* `PostDataComplianceDeletionEvents` - Delete Scheduled Event Data
-* `PostDataComplianceDeletionInvitees` - Delete Invitee Data
+* `CreateDeletionEvent` - Delete Scheduled Event Data
+* `DeleteInviteeData` - Delete Invitee Data
 
 ### EventTypes
 
-* `GetEventTypesUUID` - Get Event Type
-* `GetEventTypeAvailableTimes` - List Event Type Available Times
-* `GetEventTypes` - List User's Event Types
+* `Get` - Get Event Type
+* `GetAvailableTimes` - List Event Type Available Times
+* `List` - List User's Event Types
 
 ### Organizations
 
-* `DeleteOrganizationsUUIDMemberships` - Remove User from Organization
-* `GetOrganizationMemberships` - List Organization Memberships
-* `GetOrganizationsOrgUUIDInvitationsUUID` - Get Organization Invitation
-* `GetOrganizationsUUIDInvitations` - List Organization Invitations
-* `GetOrganizationsUUIDMemberships` - Get Organization Membership
-* `PostOrganizationsUUIDInvitations` - Invite User to Organization
-* `RevokeUsersOrganizationInvitation` - Revoke User's Organization Invitation
+* `DeleteMemberships` - Remove User from Organization
+* `GetInvitations` - Get Organization Invitation
+* `InviteUser` - Invite User to Organization
+* `ListInvitations` - List Organization Invitations
+* `ListMemberships` - List Organization Memberships
+* `RevokeInvite` - Revoke User's Organization Invitation
 
 ### RoutingForms
 
-* `GetRoutingFormSubmissions` - List Routing Form Submissions
-* `GetRoutingFormSubmissionsUUID` - Get Routing Form Submission
-* `GetRoutingForms` - List Routing Forms
-* `GetRoutingFormsUUID` - Get Routing Form
+* `GetSubmissions` - List Routing Form Submissions
+* `GetSubmissionsByUUID` - Get Routing Form Submission
+* `GetByUUID` - Get Routing Form
+* `List` - List Routing Forms
 
 ### ScheduledEvents
 
-* `DeleteInviteeNoShow` - Delete Invitee No Show
-* `GetScheduledEventsEventUUIDInviteesInviteeUUID` - Get Event Invitee
-* `GetScheduledEventsUUID` - Get Event
-* `GetInviteeNoShow` - Get Invitee No Show
+* `Cancel` - Cancel Event
+* `Cancel` - Cancel Event
+* `Cancel` - Cancel Event
+* `CreateNoShow` - Create Invitee No Show
+* `GetEventByUUID` - Get Event
 * `GetInvitees` - List Event Invitees
-* `GetScheduledEvents` - List Events
-* `PostScheduledEventsUUIDCancellationJSON` - Cancel Event
-* `PostScheduledEventsUUIDCancellationMultipart` - Cancel Event
-* `PostScheduledEventsUUIDCancellationRaw` - Cancel Event
-* `PostInviteeNoShow` - Create Invitee No Show
+* `GetInviteesByUUID` - Get Event Invitee
+* `GetNoShow` - Get Invitee No Show
+* `List` - List Events
+* `UnmarkNoShow` - Delete Invitee No Show
 
 ### SchedulingLinks
 
-* `PostSchedulingLinks` - Create Single-Use Scheduling Link
+* `Create` - Create Single-Use Scheduling Link
 
 ### Shares
 
-* `PostShares` - Create Share
+* `Create` - Create Share
 
 ### Users
 
-* `GetMyUserAccount` - Get current user
-* `GetUser` - Get user
+* `Get` - Get user
+* `GetMemberships` - Get Organization Membership
+* `Me` - Get current user
 
 ### Webhooks
 
-* `DeleteUsersUserUUIDWebhooksWebhookUUID` - Delete Webhook Subscription
-* `GetUsersUserUUIDWebhooksWebhookUUID` - Get Webhook Subscription
-* `GetWebhooks` - List Webhook Subscriptions
-* `PostUsersUUIDWebhooks` - Create Webhook Subscription
+* `Create` - Create Webhook Subscription
+* `Delete` - Delete Webhook Subscription
+* `Get` - Get Webhook Subscription
+* `List` - List Webhook Subscriptions
 <!-- End SDK Available Operations -->
 
 ### Maturity

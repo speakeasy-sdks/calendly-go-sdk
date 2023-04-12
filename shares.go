@@ -31,11 +31,11 @@ func newShares(defaultClient, securityClient HTTPClient, serverURL, language, sd
 	}
 }
 
-// PostShares - Create Share
+// Create - Create Share
 // Creates a share
 //
 // **Note: Any paramater which is not provided in the request body will be copied from the target Event Type.**
-func (s *shares) PostShares(ctx context.Context, request operations.PostSharesRequestBody) (*operations.PostSharesResponse, error) {
+func (s *shares) Create(ctx context.Context, request operations.PostSharesRequestBody) (*operations.PostSharesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/shares"
 

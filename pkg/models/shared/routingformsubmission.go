@@ -13,6 +13,7 @@ type RoutingFormSubmissionSubmitterTypeEnum string
 
 const (
 	RoutingFormSubmissionSubmitterTypeEnumInvitee RoutingFormSubmissionSubmitterTypeEnum = "Invitee"
+	RoutingFormSubmissionSubmitterTypeEnumNull    RoutingFormSubmissionSubmitterTypeEnum = "null"
 )
 
 func (e *RoutingFormSubmissionSubmitterTypeEnum) UnmarshalJSON(data []byte) error {
@@ -22,6 +23,8 @@ func (e *RoutingFormSubmissionSubmitterTypeEnum) UnmarshalJSON(data []byte) erro
 	}
 	switch s {
 	case "Invitee":
+		fallthrough
+	case "null":
 		*e = RoutingFormSubmissionSubmitterTypeEnum(s)
 		return nil
 	default:
