@@ -31,11 +31,14 @@ func newEventTypes(defaultClient, securityClient HTTPClient, serverURL, language
 	}
 }
 
-// GetEventTypesUUID - Get Event Type
+// Get - Get Event Type
 // Returns information about a specified Event Type.
-func (s *eventTypes) GetEventTypesUUID(ctx context.Context, request operations.GetEventTypesUUIDRequest) (*operations.GetEventTypesUUIDResponse, error) {
+func (s *eventTypes) Get(ctx context.Context, request operations.GetEventTypesUUIDRequest) (*operations.GetEventTypesUUIDResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/event_types/{uuid}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/event_types/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -94,14 +97,14 @@ func (s *eventTypes) GetEventTypesUUID(ctx context.Context, request operations.G
 	return res, nil
 }
 
-// GetEventTypeAvailableTimes - List Event Type Available Times
+// GetAvailableTimes - List Event Type Available Times
 // Returns a list of available times for an event type within a specified date range.
 //
 // Date range can be no greater than 1 week (7 days).
 //
 // **NOTE:**
 // * This endpoint does not support traditional keyset pagination.
-func (s *eventTypes) GetEventTypeAvailableTimes(ctx context.Context, request operations.GetEventTypeAvailableTimesRequest) (*operations.GetEventTypeAvailableTimesResponse, error) {
+func (s *eventTypes) GetAvailableTimes(ctx context.Context, request operations.GetEventTypeAvailableTimesRequest) (*operations.GetEventTypeAvailableTimesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/event_type_available_times"
 
@@ -166,7 +169,7 @@ func (s *eventTypes) GetEventTypeAvailableTimes(ctx context.Context, request ope
 	return res, nil
 }
 
-// GetEventTypes - List User's Event Types
+// List - List User's Event Types
 // Returns all Event Types associated with a specified User. Use:
 //
 // * `organization` to look up all Event Types that belong to the organization
@@ -174,7 +177,7 @@ func (s *eventTypes) GetEventTypeAvailableTimes(ctx context.Context, request ope
 // * `user` to look up a user's Event Types in an organization
 //
 // Either `organization` or `user` are required query params when using this endpoint.
-func (s *eventTypes) GetEventTypes(ctx context.Context, request operations.GetEventTypesRequest) (*operations.GetEventTypesResponse, error) {
+func (s *eventTypes) List(ctx context.Context, request operations.ListEventTypesRequest) (*operations.ListEventTypesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/event_types"
 
@@ -200,7 +203,7 @@ func (s *eventTypes) GetEventTypes(ctx context.Context, request operations.GetEv
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetEventTypesResponse{
+	res := &operations.ListEventTypesResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -209,12 +212,12 @@ func (s *eventTypes) GetEventTypes(ctx context.Context, request operations.GetEv
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetEventTypes200ApplicationJSON
+			var out *operations.ListEventTypes200ApplicationJSON
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
 
-			res.GetEventTypes200ApplicationJSONObject = out
+			res.ListEventTypes200ApplicationJSONObject = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
@@ -225,7 +228,7 @@ func (s *eventTypes) GetEventTypes(ctx context.Context, request operations.GetEv
 	case httpRes.StatusCode == 500:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetEventTypesErrorResponse
+			var out *operations.ListEventTypesErrorResponse
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
@@ -235,12 +238,12 @@ func (s *eventTypes) GetEventTypes(ctx context.Context, request operations.GetEv
 	case httpRes.StatusCode == 403:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetEventTypes403ApplicationJSON
+			var out *operations.ListEventTypes403ApplicationJSON
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
 
-			res.GetEventTypes403ApplicationJSONObject = out
+			res.ListEventTypes403ApplicationJSONObject = out
 		}
 	}
 
