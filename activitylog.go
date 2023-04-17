@@ -31,13 +31,13 @@ func newActivityLog(defaultClient, securityClient HTTPClient, serverURL, languag
 	}
 }
 
-// ActivityLog - List activity log entries
+// List - List activity log entries
 // <!-- theme: info -->
 //
 //	> This endpoint requires an <strong>Enterprise</strong> subscription.
 //
 // Returns a list of activity log entries
-func (s *activityLog) ActivityLog(ctx context.Context, request operations.ActivityLogRequest) (*operations.ActivityLogResponse, error) {
+func (s *activityLog) List(ctx context.Context, request operations.ListActivityLogRequest) (*operations.ListActivityLogResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/activity_log_entries"
 
@@ -63,7 +63,7 @@ func (s *activityLog) ActivityLog(ctx context.Context, request operations.Activi
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.ActivityLogResponse{
+	res := &operations.ListActivityLogResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -72,12 +72,12 @@ func (s *activityLog) ActivityLog(ctx context.Context, request operations.Activi
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.ActivityLog200ApplicationJSON
+			var out *operations.ListActivityLog200ApplicationJSON
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
 
-			res.ActivityLog200ApplicationJSONObject = out
+			res.ListActivityLog200ApplicationJSONObject = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
@@ -86,7 +86,7 @@ func (s *activityLog) ActivityLog(ctx context.Context, request operations.Activi
 	case httpRes.StatusCode == 500:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.ActivityLogErrorResponse
+			var out *operations.ListActivityLogErrorResponse
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
@@ -96,12 +96,12 @@ func (s *activityLog) ActivityLog(ctx context.Context, request operations.Activi
 	case httpRes.StatusCode == 403:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.ActivityLog403ApplicationJSON
+			var out *operations.ListActivityLog403ApplicationJSON
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
 
-			res.ActivityLog403ApplicationJSONObject = out
+			res.ListActivityLog403ApplicationJSONObject = out
 		}
 	}
 

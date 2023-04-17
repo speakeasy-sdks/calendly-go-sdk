@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-type GetEventTypesRequest struct {
+type ListEventTypesRequest struct {
 	// Return only active event types if true, only inactive if false, or all event types if this parameter is omitted.
 	Active *bool `queryParam:"style=form,explode=true,name=active"`
 	// Return only admin managed event types if true, exclude admin managed event types if false, or include all event types if this parameter is omitted.
@@ -28,15 +28,15 @@ type GetEventTypesRequest struct {
 	User *string `queryParam:"style=form,explode=true,name=user"`
 }
 
-type GetEventTypes403ApplicationJSONMessageEnum string
+type ListEventTypes403ApplicationJSONMessageEnum string
 
 const (
-	GetEventTypes403ApplicationJSONMessageEnumThisUserIsNotInYourOrganization            GetEventTypes403ApplicationJSONMessageEnum = "This user is not in your organization"
-	GetEventTypes403ApplicationJSONMessageEnumYouDoNotHavePermission                     GetEventTypes403ApplicationJSONMessageEnum = "You do not have permission"
-	GetEventTypes403ApplicationJSONMessageEnumYouDoNotHavePermissionToAccessThisResource GetEventTypes403ApplicationJSONMessageEnum = "You do not have permission to access this resource."
+	ListEventTypes403ApplicationJSONMessageEnumThisUserIsNotInYourOrganization            ListEventTypes403ApplicationJSONMessageEnum = "This user is not in your organization"
+	ListEventTypes403ApplicationJSONMessageEnumYouDoNotHavePermission                     ListEventTypes403ApplicationJSONMessageEnum = "You do not have permission"
+	ListEventTypes403ApplicationJSONMessageEnumYouDoNotHavePermissionToAccessThisResource ListEventTypes403ApplicationJSONMessageEnum = "You do not have permission to access this resource."
 )
 
-func (e *GetEventTypes403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) error {
+func (e *ListEventTypes403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
@@ -47,65 +47,65 @@ func (e *GetEventTypes403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) 
 	case "You do not have permission":
 		fallthrough
 	case "You do not have permission to access this resource.":
-		*e = GetEventTypes403ApplicationJSONMessageEnum(s)
+		*e = ListEventTypes403ApplicationJSONMessageEnum(s)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for GetEventTypes403ApplicationJSONMessageEnum: %s", s)
+		return fmt.Errorf("invalid value for ListEventTypes403ApplicationJSONMessageEnum: %s", s)
 	}
 }
 
-type GetEventTypes403ApplicationJSONTitleEnum string
+type ListEventTypes403ApplicationJSONTitleEnum string
 
 const (
-	GetEventTypes403ApplicationJSONTitleEnumPermissionDenied GetEventTypes403ApplicationJSONTitleEnum = "Permission Denied"
+	ListEventTypes403ApplicationJSONTitleEnumPermissionDenied ListEventTypes403ApplicationJSONTitleEnum = "Permission Denied"
 )
 
-func (e *GetEventTypes403ApplicationJSONTitleEnum) UnmarshalJSON(data []byte) error {
+func (e *ListEventTypes403ApplicationJSONTitleEnum) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	switch s {
 	case "Permission Denied":
-		*e = GetEventTypes403ApplicationJSONTitleEnum(s)
+		*e = ListEventTypes403ApplicationJSONTitleEnum(s)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for GetEventTypes403ApplicationJSONTitleEnum: %s", s)
+		return fmt.Errorf("invalid value for ListEventTypes403ApplicationJSONTitleEnum: %s", s)
 	}
 }
 
-// GetEventTypes403ApplicationJSON - Permission Denied
-type GetEventTypes403ApplicationJSON struct {
-	Message *GetEventTypes403ApplicationJSONMessageEnum `json:"message,omitempty"`
-	Title   *GetEventTypes403ApplicationJSONTitleEnum   `json:"title,omitempty"`
+// ListEventTypes403ApplicationJSON - Permission Denied
+type ListEventTypes403ApplicationJSON struct {
+	Message *ListEventTypes403ApplicationJSONMessageEnum `json:"message,omitempty"`
+	Title   *ListEventTypes403ApplicationJSONTitleEnum   `json:"title,omitempty"`
 }
 
-type GetEventTypesErrorResponseDetails struct {
+type ListEventTypesErrorResponseDetails struct {
 	Message   string  `json:"message"`
 	Parameter *string `json:"parameter,omitempty"`
 }
 
-// GetEventTypesErrorResponse - Error Object
-type GetEventTypesErrorResponse struct {
-	Details []GetEventTypesErrorResponseDetails `json:"details,omitempty"`
-	Message string                              `json:"message"`
-	Title   string                              `json:"title"`
+// ListEventTypesErrorResponse - Error Object
+type ListEventTypesErrorResponse struct {
+	Details []ListEventTypesErrorResponseDetails `json:"details,omitempty"`
+	Message string                               `json:"message"`
+	Title   string                               `json:"title"`
 }
 
-// GetEventTypes200ApplicationJSON - Service response
-type GetEventTypes200ApplicationJSON struct {
+// ListEventTypes200ApplicationJSON - Service response
+type ListEventTypes200ApplicationJSON struct {
 	Collection []shared.EventType `json:"collection"`
 	Pagination shared.Pagination  `json:"pagination"`
 }
 
-type GetEventTypesResponse struct {
+type ListEventTypesResponse struct {
 	ContentType string
 	// Request is not valid
-	ErrorResponse *GetEventTypesErrorResponse
+	ErrorResponse *ListEventTypesErrorResponse
 	StatusCode    int
 	RawResponse   *http.Response
 	// OK
-	GetEventTypes200ApplicationJSONObject *GetEventTypes200ApplicationJSON
+	ListEventTypes200ApplicationJSONObject *ListEventTypes200ApplicationJSON
 	// Permission Denied
-	GetEventTypes403ApplicationJSONObject *GetEventTypes403ApplicationJSON
+	ListEventTypes403ApplicationJSONObject *ListEventTypes403ApplicationJSON
 }

@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/speakeasy-sdks/calendly-go-sdk/pkg/models/operations"
+	"github.com/speakeasy-sdks/calendly-go-sdk/pkg/models/shared"
 	"github.com/speakeasy-sdks/calendly-go-sdk/pkg/utils"
 	"net/http"
 	"strings"
@@ -31,72 +32,14 @@ func newUsers(defaultClient, securityClient HTTPClient, serverURL, language, sdk
 	}
 }
 
-// GetMyUserAccount - Get current user
-// Returns basic information about your user account.
-func (s *users) GetMyUserAccount(ctx context.Context) (*operations.GetMyUserAccountResponse, error) {
-	baseURL := s.serverURL
-	url := strings.TrimSuffix(baseURL, "/") + "/users/me"
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetMyUserAccountResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetMyUserAccount200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetMyUserAccount200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetMyUserAccountErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetUser - Get user
+// Get - Get user
 // Returns information about a specified User.
-func (s *users) GetUser(ctx context.Context, request operations.GetUserRequest) (*operations.GetUserResponse, error) {
+func (s *users) Get(ctx context.Context, request operations.GetUserRequest) (*operations.GetUserResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/users/{uuid}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/users/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -142,6 +85,141 @@ func (s *users) GetUser(ctx context.Context, request operations.GetUserRequest) 
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *operations.GetUserErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// GetMemberships - Get Organization Membership
+// Returns information about a user's Organization Membership
+func (s *users) GetMemberships(ctx context.Context, request operations.GetOrganizationsUUIDMembershipsRequest) (*operations.GetOrganizationsUUIDMembershipsResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/organization_memberships/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetOrganizationsUUIDMembershipsResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetOrganizationsUUIDMemberships200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetOrganizationsUUIDMemberships200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetOrganizationsUUIDMembershipsErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.ErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse1 = out
+		}
+	}
+
+	return res, nil
+}
+
+// Me - Get current user
+// Returns basic information about your user account.
+func (s *users) Me(ctx context.Context) (*operations.MeResponse, error) {
+	baseURL := s.serverURL
+	url := strings.TrimSuffix(baseURL, "/") + "/users/me"
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.MeResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.Me200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.Me200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.MeErrorResponse
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
