@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type GetOrganizationMembershipsRequest struct {
+type ListOrganizationMembershipsRequest struct {
 	// The number of rows to return
 	Count *float64 `queryParam:"style=form,explode=true,name=count"`
 	// Indicates if the results should be filtered by email address
@@ -20,32 +20,32 @@ type GetOrganizationMembershipsRequest struct {
 	User *string `queryParam:"style=form,explode=true,name=user"`
 }
 
-type GetOrganizationMembershipsErrorResponseDetails struct {
+type ListOrganizationMembershipsErrorResponseDetails struct {
 	Message   string  `json:"message"`
 	Parameter *string `json:"parameter,omitempty"`
 }
 
-// GetOrganizationMembershipsErrorResponse - Error Object
-type GetOrganizationMembershipsErrorResponse struct {
-	Details []GetOrganizationMembershipsErrorResponseDetails `json:"details,omitempty"`
-	Message string                                           `json:"message"`
-	Title   string                                           `json:"title"`
+// ListOrganizationMembershipsErrorResponse - Error Object
+type ListOrganizationMembershipsErrorResponse struct {
+	Details []ListOrganizationMembershipsErrorResponseDetails `json:"details,omitempty"`
+	Message string                                            `json:"message"`
+	Title   string                                            `json:"title"`
 }
 
-// GetOrganizationMemberships200ApplicationJSON - Service response
-type GetOrganizationMemberships200ApplicationJSON struct {
+// ListOrganizationMemberships200ApplicationJSON - Service response
+type ListOrganizationMemberships200ApplicationJSON struct {
 	Collection []shared.OrganizationMembership `json:"collection"`
 	Pagination shared.Pagination               `json:"pagination"`
 }
 
-type GetOrganizationMembershipsResponse struct {
+type ListOrganizationMembershipsResponse struct {
 	ContentType string
 	// Request is not valid
-	ErrorResponse *GetOrganizationMembershipsErrorResponse
+	ErrorResponse *ListOrganizationMembershipsErrorResponse
 	// Caller not authorized to perform this action
 	ErrorResponse1 *shared.ErrorResponse
 	StatusCode     int
 	RawResponse    *http.Response
 	// OK
-	GetOrganizationMemberships200ApplicationJSONObject *GetOrganizationMemberships200ApplicationJSON
+	ListOrganizationMemberships200ApplicationJSONObject *ListOrganizationMemberships200ApplicationJSON
 }

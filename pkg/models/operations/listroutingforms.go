@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type GetRoutingFormsRequest struct {
+type ListRoutingFormsRequest struct {
 	// The number of rows to return
 	Count *float64 `queryParam:"style=form,explode=true,name=count"`
 	// View organization routing forms associated with the organization's URI.
@@ -18,30 +18,30 @@ type GetRoutingFormsRequest struct {
 	Sort *string `queryParam:"style=form,explode=true,name=sort"`
 }
 
-type GetRoutingFormsErrorResponseDetails struct {
+type ListRoutingFormsErrorResponseDetails struct {
 	Message   string  `json:"message"`
 	Parameter *string `json:"parameter,omitempty"`
 }
 
-// GetRoutingFormsErrorResponse - Error Object
-type GetRoutingFormsErrorResponse struct {
-	Details []GetRoutingFormsErrorResponseDetails `json:"details,omitempty"`
-	Message string                                `json:"message"`
-	Title   string                                `json:"title"`
+// ListRoutingFormsErrorResponse - Error Object
+type ListRoutingFormsErrorResponse struct {
+	Details []ListRoutingFormsErrorResponseDetails `json:"details,omitempty"`
+	Message string                                 `json:"message"`
+	Title   string                                 `json:"title"`
 }
 
-// GetRoutingForms200ApplicationJSON - OK
-type GetRoutingForms200ApplicationJSON struct {
+// ListRoutingForms200ApplicationJSON - OK
+type ListRoutingForms200ApplicationJSON struct {
 	Collection []shared.RoutingForm `json:"collection"`
 	Pagination shared.Pagination    `json:"pagination"`
 }
 
-type GetRoutingFormsResponse struct {
+type ListRoutingFormsResponse struct {
 	ContentType string
 	// Request is not valid
-	ErrorResponse *GetRoutingFormsErrorResponse
+	ErrorResponse *ListRoutingFormsErrorResponse
 	StatusCode    int
 	RawResponse   *http.Response
 	// OK
-	GetRoutingForms200ApplicationJSONObject *GetRoutingForms200ApplicationJSON
+	ListRoutingForms200ApplicationJSONObject *ListRoutingForms200ApplicationJSON
 }
