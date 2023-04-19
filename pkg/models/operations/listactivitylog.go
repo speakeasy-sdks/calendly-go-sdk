@@ -10,22 +10,22 @@ import (
 	"time"
 )
 
-type ActivityLogSortEnum string
+type ListActivityLogSortEnum string
 
 const (
-	ActivityLogSortEnumActionAsc            ActivityLogSortEnum = "action:asc"
-	ActivityLogSortEnumActionDesc           ActivityLogSortEnum = "action:desc"
-	ActivityLogSortEnumActorDisplayNameAsc  ActivityLogSortEnum = "actor.display_name:asc"
-	ActivityLogSortEnumActorDisplayNameDesc ActivityLogSortEnum = "actor.display_name:desc"
-	ActivityLogSortEnumActorURIAsc          ActivityLogSortEnum = "actor.uri:asc"
-	ActivityLogSortEnumActorURIDesc         ActivityLogSortEnum = "actor.uri:desc"
-	ActivityLogSortEnumNamespaceAsc         ActivityLogSortEnum = "namespace:asc"
-	ActivityLogSortEnumNamespaceDesc        ActivityLogSortEnum = "namespace:desc"
-	ActivityLogSortEnumOccurredAtAsc        ActivityLogSortEnum = "occurred_at:asc"
-	ActivityLogSortEnumOccurredAtDesc       ActivityLogSortEnum = "occurred_at:desc"
+	ListActivityLogSortEnumActionAsc            ListActivityLogSortEnum = "action:asc"
+	ListActivityLogSortEnumActionDesc           ListActivityLogSortEnum = "action:desc"
+	ListActivityLogSortEnumActorDisplayNameAsc  ListActivityLogSortEnum = "actor.display_name:asc"
+	ListActivityLogSortEnumActorDisplayNameDesc ListActivityLogSortEnum = "actor.display_name:desc"
+	ListActivityLogSortEnumActorURIAsc          ListActivityLogSortEnum = "actor.uri:asc"
+	ListActivityLogSortEnumActorURIDesc         ListActivityLogSortEnum = "actor.uri:desc"
+	ListActivityLogSortEnumNamespaceAsc         ListActivityLogSortEnum = "namespace:asc"
+	ListActivityLogSortEnumNamespaceDesc        ListActivityLogSortEnum = "namespace:desc"
+	ListActivityLogSortEnumOccurredAtAsc        ListActivityLogSortEnum = "occurred_at:asc"
+	ListActivityLogSortEnumOccurredAtDesc       ListActivityLogSortEnum = "occurred_at:desc"
 )
 
-func (e *ActivityLogSortEnum) UnmarshalJSON(data []byte) error {
+func (e *ListActivityLogSortEnum) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
@@ -50,14 +50,14 @@ func (e *ActivityLogSortEnum) UnmarshalJSON(data []byte) error {
 	case "occurred_at:asc":
 		fallthrough
 	case "occurred_at:desc":
-		*e = ActivityLogSortEnum(s)
+		*e = ListActivityLogSortEnum(s)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ActivityLogSortEnum: %s", s)
+		return fmt.Errorf("invalid value for ListActivityLogSortEnum: %s", s)
 	}
 }
 
-type ActivityLogRequest struct {
+type ListActivityLogRequest struct {
 	// The action(s) associated with the entries
 	Action []string `queryParam:"style=form,explode=false,name=action"`
 	// Return entries from the user(s) associated with the provided URIs
@@ -86,17 +86,17 @@ type ActivityLogRequest struct {
 	//
 	SearchTerm *string `queryParam:"style=form,explode=true,name=search_term"`
 	// Order results by the specified field and direction. List of {field}:{direction} values.
-	Sort []ActivityLogSortEnum `queryParam:"style=form,explode=false,name=sort"`
+	Sort []ListActivityLogSortEnum `queryParam:"style=form,explode=false,name=sort"`
 }
 
-type ActivityLog403ApplicationJSONMessageEnum string
+type ListActivityLog403ApplicationJSONMessageEnum string
 
 const (
-	ActivityLog403ApplicationJSONMessageEnumPleaseUpgradeYourCalendlyAccountToEnterprise ActivityLog403ApplicationJSONMessageEnum = "Please upgrade your Calendly account to Enterprise."
-	ActivityLog403ApplicationJSONMessageEnumYouDoNotHavePermissionToAccessThisResource   ActivityLog403ApplicationJSONMessageEnum = "You do not have permission to access this resource."
+	ListActivityLog403ApplicationJSONMessageEnumPleaseUpgradeYourCalendlyAccountToEnterprise ListActivityLog403ApplicationJSONMessageEnum = "Please upgrade your Calendly account to Enterprise."
+	ListActivityLog403ApplicationJSONMessageEnumYouDoNotHavePermissionToAccessThisResource   ListActivityLog403ApplicationJSONMessageEnum = "You do not have permission to access this resource."
 )
 
-func (e *ActivityLog403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) error {
+func (e *ListActivityLog403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
@@ -105,53 +105,53 @@ func (e *ActivityLog403ApplicationJSONMessageEnum) UnmarshalJSON(data []byte) er
 	case "Please upgrade your Calendly account to Enterprise.":
 		fallthrough
 	case "You do not have permission to access this resource.":
-		*e = ActivityLog403ApplicationJSONMessageEnum(s)
+		*e = ListActivityLog403ApplicationJSONMessageEnum(s)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ActivityLog403ApplicationJSONMessageEnum: %s", s)
+		return fmt.Errorf("invalid value for ListActivityLog403ApplicationJSONMessageEnum: %s", s)
 	}
 }
 
-type ActivityLog403ApplicationJSONTitleEnum string
+type ListActivityLog403ApplicationJSONTitleEnum string
 
 const (
-	ActivityLog403ApplicationJSONTitleEnumPermissionDenied ActivityLog403ApplicationJSONTitleEnum = "Permission Denied"
+	ListActivityLog403ApplicationJSONTitleEnumPermissionDenied ListActivityLog403ApplicationJSONTitleEnum = "Permission Denied"
 )
 
-func (e *ActivityLog403ApplicationJSONTitleEnum) UnmarshalJSON(data []byte) error {
+func (e *ListActivityLog403ApplicationJSONTitleEnum) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
 	switch s {
 	case "Permission Denied":
-		*e = ActivityLog403ApplicationJSONTitleEnum(s)
+		*e = ListActivityLog403ApplicationJSONTitleEnum(s)
 		return nil
 	default:
-		return fmt.Errorf("invalid value for ActivityLog403ApplicationJSONTitleEnum: %s", s)
+		return fmt.Errorf("invalid value for ListActivityLog403ApplicationJSONTitleEnum: %s", s)
 	}
 }
 
-// ActivityLog403ApplicationJSON - Permission Denied
-type ActivityLog403ApplicationJSON struct {
-	Message *ActivityLog403ApplicationJSONMessageEnum `json:"message,omitempty"`
-	Title   *ActivityLog403ApplicationJSONTitleEnum   `json:"title,omitempty"`
+// ListActivityLog403ApplicationJSON - Permission Denied
+type ListActivityLog403ApplicationJSON struct {
+	Message *ListActivityLog403ApplicationJSONMessageEnum `json:"message,omitempty"`
+	Title   *ListActivityLog403ApplicationJSONTitleEnum   `json:"title,omitempty"`
 }
 
-type ActivityLogErrorResponseDetails struct {
+type ListActivityLogErrorResponseDetails struct {
 	Message   string  `json:"message"`
 	Parameter *string `json:"parameter,omitempty"`
 }
 
-// ActivityLogErrorResponse - Error Object
-type ActivityLogErrorResponse struct {
-	Details []ActivityLogErrorResponseDetails `json:"details,omitempty"`
-	Message string                            `json:"message"`
-	Title   string                            `json:"title"`
+// ListActivityLogErrorResponse - Error Object
+type ListActivityLogErrorResponse struct {
+	Details []ListActivityLogErrorResponseDetails `json:"details,omitempty"`
+	Message string                                `json:"message"`
+	Title   string                                `json:"title"`
 }
 
-// ActivityLog200ApplicationJSON - Activity log response
-type ActivityLog200ApplicationJSON struct {
+// ListActivityLog200ApplicationJSON - Activity log response
+type ListActivityLog200ApplicationJSON struct {
 	// The set of activity log entries matching the criteria
 	Collection []shared.Entry `json:"collection"`
 	// If there are more search results than the total_count field indicates, pagination will continue to return results past the total_count field value.
@@ -163,14 +163,14 @@ type ActivityLog200ApplicationJSON struct {
 	TotalCount int64 `json:"total_count"`
 }
 
-type ActivityLogResponse struct {
+type ListActivityLogResponse struct {
 	ContentType string
 	// Request is not valid
-	ErrorResponse *ActivityLogErrorResponse
+	ErrorResponse *ListActivityLogErrorResponse
 	StatusCode    int
 	RawResponse   *http.Response
 	// OK
-	ActivityLog200ApplicationJSONObject *ActivityLog200ApplicationJSON
+	ListActivityLog200ApplicationJSONObject *ListActivityLog200ApplicationJSON
 	// Permission Denied
-	ActivityLog403ApplicationJSONObject *ActivityLog403ApplicationJSON
+	ListActivityLog403ApplicationJSONObject *ListActivityLog403ApplicationJSON
 }

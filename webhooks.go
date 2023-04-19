@@ -31,191 +31,7 @@ func newWebhooks(defaultClient, securityClient HTTPClient, serverURL, language, 
 	}
 }
 
-// DeleteUsersUserUUIDWebhooksWebhookUUID - Delete Webhook Subscription
-// Delete a Webhook Subscription.
-func (s *webhooks) DeleteUsersUserUUIDWebhooksWebhookUUID(ctx context.Context, request operations.DeleteUsersUserUUIDWebhooksWebhookUUIDRequest) (*operations.DeleteUsersUserUUIDWebhooksWebhookUUIDResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/webhook_subscriptions/{webhook_uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.DeleteUsersUserUUIDWebhooksWebhookUUIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 204:
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.DeleteUsersUserUUIDWebhooksWebhookUUIDErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetUsersUserUUIDWebhooksWebhookUUID - Get Webhook Subscription
-// Get a specified Webhook Subscription.
-func (s *webhooks) GetUsersUserUUIDWebhooksWebhookUUID(ctx context.Context, request operations.GetUsersUserUUIDWebhooksWebhookUUIDRequest) (*operations.GetUsersUserUUIDWebhooksWebhookUUIDResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/webhook_subscriptions/{webhook_uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetUsersUserUUIDWebhooksWebhookUUIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetUsersUserUUIDWebhooksWebhookUUID200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetUsersUserUUIDWebhooksWebhookUUID200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetUsersUserUUIDWebhooksWebhookUUIDErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetWebhooks - List Webhook Subscriptions
-// Get a list of Webhook Subscriptions for a specified Organization or User.
-func (s *webhooks) GetWebhooks(ctx context.Context, request operations.GetWebhooksRequest) (*operations.GetWebhooksResponse, error) {
-	baseURL := s.serverURL
-	url := strings.TrimSuffix(baseURL, "/") + "/webhook_subscriptions"
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
-		return nil, fmt.Errorf("error populating query params: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetWebhooksResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetWebhooks200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetWebhooks200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetWebhooksErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetWebhooks403ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetWebhooks403ApplicationJSONObject = out
-		}
-	}
-
-	return res, nil
-}
-
-// PostUsersUUIDWebhooks - Create Webhook Subscription
+// Create - Create Webhook Subscription
 // Create a Webhook Subscription for an Organization or User.
 //
 // * The `organization` subscription scope triggers the webhook for all subscribed events within the organization.
@@ -226,7 +42,7 @@ func (s *webhooks) GetWebhooks(ctx context.Context, request operations.GetWebhoo
 // | <pre>invitee.created</pre> | `organization` `user` |
 // | <pre>invitee.canceled</pre> | `organization` `user` |
 // | <pre>routing_form_submission.created</pre> | `organization` <br /> <small>Create separate Webhook Subscriptions for events with different subscription scopes.</small> |
-func (s *webhooks) PostUsersUUIDWebhooks(ctx context.Context, request operations.PostUsersUUIDWebhooksRequestBody) (*operations.PostUsersUUIDWebhooksResponse, error) {
+func (s *webhooks) Create(ctx context.Context, request operations.PostUsersUUIDWebhooksRequestBody) (*operations.PostUsersUUIDWebhooksResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/webhook_subscriptions"
 
@@ -299,6 +115,196 @@ func (s *webhooks) PostUsersUUIDWebhooks(ctx context.Context, request operations
 			}
 
 			res.PostUsersUUIDWebhooks403ApplicationJSONObject = out
+		}
+	}
+
+	return res, nil
+}
+
+// Delete - Delete Webhook Subscription
+// Delete a Webhook Subscription.
+func (s *webhooks) Delete(ctx context.Context, request operations.DeleteUsersUserUUIDWebhooksWebhookUUIDRequest) (*operations.DeleteUsersUserUUIDWebhooksWebhookUUIDResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/webhook_subscriptions/{webhook_uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.DeleteUsersUserUUIDWebhooksWebhookUUIDResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 204:
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.DeleteUsersUserUUIDWebhooksWebhookUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// Get - Get Webhook Subscription
+// Get a specified Webhook Subscription.
+func (s *webhooks) Get(ctx context.Context, request operations.GetUsersUserUUIDWebhooksWebhookUUIDRequest) (*operations.GetUsersUserUUIDWebhooksWebhookUUIDResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/webhook_subscriptions/{webhook_uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetUsersUserUUIDWebhooksWebhookUUIDResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetUsersUserUUIDWebhooksWebhookUUID200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetUsersUserUUIDWebhooksWebhookUUID200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetUsersUserUUIDWebhooksWebhookUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// List - List Webhook Subscriptions
+// Get a list of Webhook Subscriptions for a specified Organization or User.
+func (s *webhooks) List(ctx context.Context, request operations.ListWebhooksRequest) (*operations.ListWebhooksResponse, error) {
+	baseURL := s.serverURL
+	url := strings.TrimSuffix(baseURL, "/") + "/webhook_subscriptions"
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.ListWebhooksResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListWebhooks200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ListWebhooks200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListWebhooksErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListWebhooks403ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ListWebhooks403ApplicationJSONObject = out
 		}
 	}
 

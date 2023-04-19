@@ -31,9 +31,9 @@ func newRoutingForms(defaultClient, securityClient HTTPClient, serverURL, langua
 	}
 }
 
-// GetRoutingFormSubmissions - List Routing Form Submissions
+// GetSubmissions - List Routing Form Submissions
 // Get a list of Routing Form Submissions for a specified Routing Form.
-func (s *routingForms) GetRoutingFormSubmissions(ctx context.Context, request operations.GetRoutingFormSubmissionsRequest) (*operations.GetRoutingFormSubmissionsResponse, error) {
+func (s *routingForms) GetSubmissions(ctx context.Context, request operations.GetRoutingFormSubmissionsRequest) (*operations.GetRoutingFormSubmissionsResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/routing_form_submissions"
 
@@ -98,11 +98,14 @@ func (s *routingForms) GetRoutingFormSubmissions(ctx context.Context, request op
 	return res, nil
 }
 
-// GetRoutingFormSubmissionsUUID - Get Routing Form Submission
+// GetSubmissionsByUUID - Get Routing Form Submission
 // Get a specified Routing Form Submission.
-func (s *routingForms) GetRoutingFormSubmissionsUUID(ctx context.Context, request operations.GetRoutingFormSubmissionsUUIDRequest) (*operations.GetRoutingFormSubmissionsUUIDResponse, error) {
+func (s *routingForms) GetSubmissionsByUUID(ctx context.Context, request operations.GetRoutingFormSubmissionsUUIDRequest) (*operations.GetRoutingFormSubmissionsUUIDResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/routing_form_submissions/{uuid}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/routing_form_submissions/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -161,78 +164,14 @@ func (s *routingForms) GetRoutingFormSubmissionsUUID(ctx context.Context, reques
 	return res, nil
 }
 
-// GetRoutingForms - List Routing Forms
-// Get a list of Routing Forms for a specified Organization.
-func (s *routingForms) GetRoutingForms(ctx context.Context, request operations.GetRoutingFormsRequest) (*operations.GetRoutingFormsResponse, error) {
-	baseURL := s.serverURL
-	url := strings.TrimSuffix(baseURL, "/") + "/routing_forms"
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
-		return nil, fmt.Errorf("error populating query params: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetRoutingFormsResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetRoutingForms200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetRoutingForms200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetRoutingFormsErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetRoutingFormsUUID - Get Routing Form
+// GetByUUID - Get Routing Form
 // Get a specified Routing Form.
-func (s *routingForms) GetRoutingFormsUUID(ctx context.Context, request operations.GetRoutingFormsUUIDRequest) (*operations.GetRoutingFormsUUIDResponse, error) {
+func (s *routingForms) GetByUUID(ctx context.Context, request operations.GetRoutingFormsUUIDRequest) (*operations.GetRoutingFormsUUIDResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/routing_forms/{uuid}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/routing_forms/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -280,6 +219,73 @@ func (s *routingForms) GetRoutingFormsUUID(ctx context.Context, request operatio
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *operations.GetRoutingFormsUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// List - List Routing Forms
+// Get a list of Routing Forms for a specified Organization.
+func (s *routingForms) List(ctx context.Context, request operations.ListRoutingFormsRequest) (*operations.ListRoutingFormsResponse, error) {
+	baseURL := s.serverURL
+	url := strings.TrimSuffix(baseURL, "/") + "/routing_forms"
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.ListRoutingFormsResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListRoutingForms200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ListRoutingForms200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListRoutingFormsErrorResponse
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}
