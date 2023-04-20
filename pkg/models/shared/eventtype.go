@@ -92,6 +92,7 @@ type EventTypePoolingTypeEnum string
 const (
 	EventTypePoolingTypeEnumRoundRobin EventTypePoolingTypeEnum = "round_robin"
 	EventTypePoolingTypeEnumCollective EventTypePoolingTypeEnum = "collective"
+	EventTypePoolingTypeEnumNull       EventTypePoolingTypeEnum = "null"
 )
 
 func (e *EventTypePoolingTypeEnum) UnmarshalJSON(data []byte) error {
@@ -103,6 +104,8 @@ func (e *EventTypePoolingTypeEnum) UnmarshalJSON(data []byte) error {
 	case "round_robin":
 		fallthrough
 	case "collective":
+		fallthrough
+	case "null":
 		*e = EventTypePoolingTypeEnum(s)
 		return nil
 	default:

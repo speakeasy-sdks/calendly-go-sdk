@@ -32,9 +32,82 @@ func newAvailability(defaultClient, securityClient HTTPClient, serverURL, langua
 	}
 }
 
-// GetUserAvailabilitySchedules - List User Availability Schedules
+// Get - Get User Availability Schedule
+// This will return the availability schedule of the given UUID.
+func (s *availability) Get(ctx context.Context, request operations.GetUserAvailabilitySchedulesUUIDRequest) (*operations.GetUserAvailabilitySchedulesUUIDResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/user_availability_schedules/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetUserAvailabilitySchedulesUUIDResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetUserAvailabilitySchedulesUUID200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetUserAvailabilitySchedulesUUID200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetUserAvailabilitySchedulesUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetUserAvailabilitySchedulesUUID403ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetUserAvailabilitySchedulesUUID403ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 500:
+	}
+
+	return res, nil
+}
+
+// GetAvailability - List User Availability Schedules
 // Returns the availability schedules of the given user.
-func (s *availability) GetUserAvailabilitySchedules(ctx context.Context, request operations.GetUserAvailabilitySchedulesRequest) (*operations.GetUserAvailabilitySchedulesResponse, error) {
+func (s *availability) GetAvailability(ctx context.Context, request operations.GetUserAvailabilitySchedulesRequest) (*operations.GetUserAvailabilitySchedulesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/user_availability_schedules"
 
@@ -107,77 +180,7 @@ func (s *availability) GetUserAvailabilitySchedules(ctx context.Context, request
 	return res, nil
 }
 
-// GetUserAvailabilitySchedulesUUID - Get User Availability Schedule
-// This will return the availability schedule of the given UUID.
-func (s *availability) GetUserAvailabilitySchedulesUUID(ctx context.Context, request operations.GetUserAvailabilitySchedulesUUIDRequest) (*operations.GetUserAvailabilitySchedulesUUIDResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/user_availability_schedules/{uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetUserAvailabilitySchedulesUUIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetUserAvailabilitySchedulesUUID200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetUserAvailabilitySchedulesUUID200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetUserAvailabilitySchedulesUUIDErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetUserAvailabilitySchedulesUUID403ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetUserAvailabilitySchedulesUUID403ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 500:
-	}
-
-	return res, nil
-}
-
-// GetUserBusyTimes - List User Busy Times
+// GetBusyTimes - List User Busy Times
 // Returns an ascending list of user internal and external scheduled events within a specified date range.
 //
 // Date range can be no greater than 1 week (7 days).
@@ -185,7 +188,7 @@ func (s *availability) GetUserAvailabilitySchedulesUUID(ctx context.Context, req
 // **NOTE:**
 // * This endpoint does not support traditional keyset pagination.
 // * External events will only be returned for calendars that have "Check for conflicts" configured.
-func (s *availability) GetUserBusyTimes(ctx context.Context, request operations.GetUserBusyTimesRequest) (*operations.GetUserBusyTimesResponse, error) {
+func (s *availability) GetBusyTimes(ctx context.Context, request operations.GetUserBusyTimesRequest) (*operations.GetUserBusyTimesResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/user_busy_times"
 
