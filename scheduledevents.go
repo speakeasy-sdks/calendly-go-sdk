@@ -32,422 +32,14 @@ func newScheduledEvents(defaultClient, securityClient HTTPClient, serverURL, lan
 	}
 }
 
-// DeleteInviteeNoShow - Delete Invitee No Show
-// Undoes marking an Invitee as a No Show.
-func (s *scheduledEvents) DeleteInviteeNoShow(ctx context.Context, request operations.DeleteInviteeNoShowRequest) (*operations.DeleteInviteeNoShowResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/invitee_no_shows/{uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.DeleteInviteeNoShowResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 204:
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.DeleteInviteeNoShowErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetScheduledEventsEventUUIDInviteesInviteeUUID - Get Event Invitee
-// Returns information about a specified Invitee (person invited to an event).
-func (s *scheduledEvents) GetScheduledEventsEventUUIDInviteesInviteeUUID(ctx context.Context, request operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDRequest) (*operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{event_uuid}/invitees/{invitee_uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsEventUUIDInviteesInviteeUUID200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetScheduledEventsEventUUIDInviteesInviteeUUID200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.ErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse1 = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetScheduledEventsUUID - Get Event
-// Returns information about a specified Event.
-func (s *scheduledEvents) GetScheduledEventsUUID(ctx context.Context, request operations.GetScheduledEventsUUIDRequest) (*operations.GetScheduledEventsUUIDResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetScheduledEventsUUIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsUUID200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetScheduledEventsUUID200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsUUIDErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsUUID403ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetScheduledEventsUUID403ApplicationJSONObject = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetInviteeNoShow - Get Invitee No Show
-// Returns information about a specified Invitee No Show.
-func (s *scheduledEvents) GetInviteeNoShow(ctx context.Context, request operations.GetInviteeNoShowRequest) (*operations.GetInviteeNoShowResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/invitee_no_shows/{uuid}", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetInviteeNoShowResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetInviteeNoShow200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetInviteeNoShow200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 403:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetInviteeNoShowErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetInvitees - List Event Invitees
-// Returns a list of Invitees for an event.
-func (s *scheduledEvents) GetInvitees(ctx context.Context, request operations.GetInviteesRequest) (*operations.GetInviteesResponse, error) {
-	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/invitees", request, nil)
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
-		return nil, fmt.Errorf("error populating query params: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetInviteesResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetInvitees200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetInvitees200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetInviteesErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetInvitees403ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetInvitees403ApplicationJSONObject = out
-		}
-	}
-
-	return res, nil
-}
-
-// GetScheduledEvents - List Events
-// Returns a list of  Events.
-//
-// * Pass `organization` parameter to return events for that organization (requires admin/owner privilege)
-// * Pass `user` parameter to return events for a specific User
-//
-// **NOTES:**
-// * If you are the admin/owner of the organization, you can use both `organization` and `user` to get a list of events for a specific user within your organization.
-//
-// * `user` can only be used alone when requesting your own personal events. This will return your events within any organization that you are currently in or were a part of in the past.
-func (s *scheduledEvents) GetScheduledEvents(ctx context.Context, request operations.GetScheduledEventsRequest) (*operations.GetScheduledEventsResponse, error) {
-	baseURL := s.serverURL
-	url := strings.TrimSuffix(baseURL, "/") + "/scheduled_events"
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-
-	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
-		return nil, fmt.Errorf("error populating query params: %w", err)
-	}
-
-	client := s.securityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-	defer httpRes.Body.Close()
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.GetScheduledEventsResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEvents200ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetScheduledEvents200ApplicationJSONObject = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 500:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEventsErrorResponse
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.ErrorResponse = out
-		}
-	case httpRes.StatusCode == 403:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *operations.GetScheduledEvents403ApplicationJSON
-			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
-				return nil, err
-			}
-
-			res.GetScheduledEvents403ApplicationJSONObject = out
-		}
-	}
-
-	return res, nil
-}
-
-// PostScheduledEventsUUIDCancellationJSON - Cancel Event
+// Cancel - Cancel Event
 // Cancels specified event.
-func (s *scheduledEvents) PostScheduledEventsUUIDCancellationJSON(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationJSONRequest) (*operations.PostScheduledEventsUUIDCancellationJSONResponse, error) {
+func (s *scheduledEvents) Cancel(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationJSONRequest) (*operations.PostScheduledEventsUUIDCancellationJSONResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "RequestBody", "json")
 	if err != nil {
@@ -521,11 +113,14 @@ func (s *scheduledEvents) PostScheduledEventsUUIDCancellationJSON(ctx context.Co
 	return res, nil
 }
 
-// PostScheduledEventsUUIDCancellationMultipart - Cancel Event
+// Cancel - Cancel Event
 // Cancels specified event.
-func (s *scheduledEvents) PostScheduledEventsUUIDCancellationMultipart(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationMultipartRequest) (*operations.PostScheduledEventsUUIDCancellationMultipartResponse, error) {
+func (s *scheduledEvents) Cancel(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationMultipartRequest) (*operations.PostScheduledEventsUUIDCancellationMultipartResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "RequestBody", "multipart")
 	if err != nil {
@@ -599,11 +194,14 @@ func (s *scheduledEvents) PostScheduledEventsUUIDCancellationMultipart(ctx conte
 	return res, nil
 }
 
-// PostScheduledEventsUUIDCancellationRaw - Cancel Event
+// Cancel - Cancel Event
 // Cancels specified event.
-func (s *scheduledEvents) PostScheduledEventsUUIDCancellationRaw(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationRawRequest) (*operations.PostScheduledEventsUUIDCancellationRawResponse, error) {
+func (s *scheduledEvents) Cancel(ctx context.Context, request operations.PostScheduledEventsUUIDCancellationRawRequest) (*operations.PostScheduledEventsUUIDCancellationRawResponse, error) {
 	baseURL := s.serverURL
-	url := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/cancellation", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "RequestBody", "raw")
 	if err != nil {
@@ -677,9 +275,9 @@ func (s *scheduledEvents) PostScheduledEventsUUIDCancellationRaw(ctx context.Con
 	return res, nil
 }
 
-// PostInviteeNoShow - Create Invitee No Show
+// CreateNoShow - Create Invitee No Show
 // Marks an Invitee as a No Show.
-func (s *scheduledEvents) PostInviteeNoShow(ctx context.Context, request operations.PostInviteeNoShowRequestBody) (*operations.PostInviteeNoShowResponse, error) {
+func (s *scheduledEvents) CreateNoShow(ctx context.Context, request operations.PostInviteeNoShowRequestBody) (*operations.PostInviteeNoShowResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/invitee_no_shows"
 
@@ -739,6 +337,432 @@ func (s *scheduledEvents) PostInviteeNoShow(ctx context.Context, request operati
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *operations.PostInviteeNoShowErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// GetEventByUUID - Get Event
+// Returns information about a specified Event.
+func (s *scheduledEvents) GetEventByUUID(ctx context.Context, request operations.GetScheduledEventsUUIDRequest) (*operations.GetScheduledEventsUUIDResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetScheduledEventsUUIDResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetScheduledEventsUUID200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetScheduledEventsUUID200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetScheduledEventsUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetScheduledEventsUUID403ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetScheduledEventsUUID403ApplicationJSONObject = out
+		}
+	}
+
+	return res, nil
+}
+
+// GetInvitees - List Event Invitees
+// Returns a list of Invitees for an event.
+func (s *scheduledEvents) GetInvitees(ctx context.Context, request operations.GetInviteesRequest) (*operations.GetInviteesResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{uuid}/invitees", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetInviteesResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetInvitees200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetInvitees200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetInviteesErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetInvitees403ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetInvitees403ApplicationJSONObject = out
+		}
+	}
+
+	return res, nil
+}
+
+// GetInviteesByUUID - Get Event Invitee
+// Returns information about a specified Invitee (person invited to an event).
+func (s *scheduledEvents) GetInviteesByUUID(ctx context.Context, request operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDRequest) (*operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/scheduled_events/{event_uuid}/invitees/{invitee_uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetScheduledEventsEventUUIDInviteesInviteeUUID200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetScheduledEventsEventUUIDInviteesInviteeUUID200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetScheduledEventsEventUUIDInviteesInviteeUUIDErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.ErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse1 = out
+		}
+	}
+
+	return res, nil
+}
+
+// GetNoShow - Get Invitee No Show
+// Returns information about a specified Invitee No Show.
+func (s *scheduledEvents) GetNoShow(ctx context.Context, request operations.GetInviteeNoShowRequest) (*operations.GetInviteeNoShowResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/invitee_no_shows/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.GetInviteeNoShowResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetInviteeNoShow200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.GetInviteeNoShow200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.GetInviteeNoShowErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	}
+
+	return res, nil
+}
+
+// List - List Events
+// Returns a list of  Events.
+//
+// * Pass `organization` parameter to return events for that organization (requires admin/owner privilege)
+// * Pass `user` parameter to return events for a specific User
+//
+// **NOTES:**
+// * If you are the admin/owner of the organization, you can use both `organization` and `user` to get a list of events for a specific user within your organization.
+//
+// * `user` can only be used alone when requesting your own personal events. This will return your events within any organization that you are currently in or were a part of in the past.
+func (s *scheduledEvents) List(ctx context.Context, request operations.ListScheduledEventsRequest) (*operations.ListScheduledEventsResponse, error) {
+	baseURL := s.serverURL
+	url := strings.TrimSuffix(baseURL, "/") + "/scheduled_events"
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	if err := utils.PopulateQueryParams(ctx, req, request, nil); err != nil {
+		return nil, fmt.Errorf("error populating query params: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.ListScheduledEventsResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListScheduledEvents200ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ListScheduledEvents200ApplicationJSONObject = out
+		}
+	case httpRes.StatusCode == 400:
+		fallthrough
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListScheduledEventsErrorResponse
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ErrorResponse = out
+		}
+	case httpRes.StatusCode == 403:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.ListScheduledEvents403ApplicationJSON
+			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
+				return nil, err
+			}
+
+			res.ListScheduledEvents403ApplicationJSONObject = out
+		}
+	}
+
+	return res, nil
+}
+
+// UnmarkNoShow - Delete Invitee No Show
+// Undoes marking an Invitee as a No Show.
+func (s *scheduledEvents) UnmarkNoShow(ctx context.Context, request operations.DeleteInviteeNoShowRequest) (*operations.DeleteInviteeNoShowResponse, error) {
+	baseURL := s.serverURL
+	url, err := utils.GenerateURL(ctx, baseURL, "/invitee_no_shows/{uuid}", request, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error generating URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := s.securityClient
+
+	httpRes, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	if httpRes == nil {
+		return nil, fmt.Errorf("error sending request: no response")
+	}
+	defer httpRes.Body.Close()
+
+	contentType := httpRes.Header.Get("Content-Type")
+
+	res := &operations.DeleteInviteeNoShowResponse{
+		StatusCode:  httpRes.StatusCode,
+		ContentType: contentType,
+		RawResponse: httpRes,
+	}
+	switch {
+	case httpRes.StatusCode == 204:
+	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
+		fallthrough
+	case httpRes.StatusCode == 404:
+		fallthrough
+	case httpRes.StatusCode == 500:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *operations.DeleteInviteeNoShowErrorResponse
 			if err := utils.UnmarshalJsonFromResponseBody(httpRes.Body, &out); err != nil {
 				return nil, err
 			}

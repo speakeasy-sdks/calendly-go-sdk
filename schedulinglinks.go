@@ -31,9 +31,9 @@ func newSchedulingLinks(defaultClient, securityClient HTTPClient, serverURL, lan
 	}
 }
 
-// PostSchedulingLinks - Create Single-Use Scheduling Link
+// Create - Create Single-Use Scheduling Link
 // Creates a single-use scheduling link.
-func (s *schedulingLinks) PostSchedulingLinks(ctx context.Context, request operations.PostSchedulingLinksRequestBody) (*operations.PostSchedulingLinksResponse, error) {
+func (s *schedulingLinks) Create(ctx context.Context, request operations.PostSchedulingLinksRequestBody) (*operations.PostSchedulingLinksResponse, error) {
 	baseURL := s.serverURL
 	url := strings.TrimSuffix(baseURL, "/") + "/scheduling_links"
 
